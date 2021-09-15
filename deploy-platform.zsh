@@ -1,4 +1,4 @@
-RESOURCE_GROUP="terry"
+RESOURCE_GROUP="demo"
 LOCATION="westeurope"
 az group create --name $RESOURCE_GROUP --location $LOCATION
 

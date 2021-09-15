@@ -1,0 +1,6 @@
+docker image build . -t hellodemo
+docker image tag hellodemo:latest hellodemo:v1
+docker run -p 3000:80 --name mycontainer -d hellodemo
+
+##add docker image inspect 
+
