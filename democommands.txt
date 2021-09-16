@@ -34,7 +34,6 @@ az appservice plan create --name demoAppServicePlan --resource-group $RESOURCE_G
 az webapp create --resource-group $RESOURCE_GROUP --plan demoAppServicePlan --name $APP_NAME --deployment-container-image-name $REGISTRY_URL/hellodemo:latest
 
 
-##create managed identity
 MANAGED_IDENTITY=$(az webapp identity assign --resource-group $RESOURCE_GROUP --name $APP_NAME --query principalId --output tsv)
 
 SUBSCRIPTION_ID=$(az account show --query id --output tsv)
@@ -46,3 +45,12 @@ az role assignment create --assignee $MANAGED_IDENTITY --scope /subscriptions/$S
 az resource update --ids /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Web/sites/$APP_NAME/config/web --set properties.acrUseManagedIdentityCreds=True
 
 az webapp config container set --name $APP_NAME --resource-group $RESOURCE_GROUP --docker-custom-image-name $REGISTRY_URL/hellodemo:latest --docker-registry-server-url https://$REGISTRY_URL
+
+##create container instance
+
+az container create --resource-group $RESOURCE_GROUP --name demoaci --image $REGISTRY_URL/hellodemo --dns-name-label demoacr$RANDOM --ports 80
+
+az container show --resource-group $RESOURCE_GROUP --name demoaci --query "{FQDN:ipAddress.fqdn,ProvisioningState:provisioningState}" --out table
+az container logs --resource-group $RESOURCE_GROUP --name demoaci
+
+az container attach --resource-group $RESOURCE_GROUP --name demoaci
